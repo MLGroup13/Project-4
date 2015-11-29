@@ -1,4 +1,5 @@
-public class ClusterEvaluation {
+public class ClusterEvaluation 
+{
 
     /*
      * Calculate separation between two clusters given:

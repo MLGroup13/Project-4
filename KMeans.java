@@ -4,8 +4,9 @@ import java.util.Random;
 
 public class KMeans 
 {
-	private float [][] data;
-	private int K;
+	private float [][] data;	// 2D array of floats to store the data to cluster
+	private int K;	// integer to store number of clusters 
+	private int iterations;	// integer to record number of iterations till convergence
 	
 	public KMeans(float [][] d, int k)
 	{
@@ -13,7 +14,7 @@ public class KMeans
 		K = k;
 	}
 	
-	public void cluster()
+	public Cluster[] cluster()
 	{	
 		Random random = new Random();
 		Cluster [] cluster = new Cluster[K];
@@ -69,14 +70,18 @@ public class KMeans
 		int iteration = 0;	// variable to keep track of number of iterations
 		
 		// apply K-means until the centroids converge  
-		while(iteration < 10)
+		while(!equals(prevCluster, cluster))
 		{
 			System.out.println("Iteration" + iteration);
 			
 			// record the previous values of the centroids
 			for (int i = 0; i < cluster.length; i++)
 			{
-				prevCluster[i] = cluster[i].getMu();
+				float mu [] = cluster[i].getMu();
+				for (int j = 0; j < mu.length; j++)
+				{
+					prevCluster[i][j] = mu[j];
+				}
 			}
 			
 			for (int i = 0; i < data.length; i++)
@@ -108,6 +113,12 @@ public class KMeans
 			}
 			iteration++;
 		}
+		
+		iterations = iteration;
+		
+		calcStd(cluster);
+		
+		return cluster;
 	}
 	
 	private int cluster(Cluster [] c, float d[])
@@ -134,6 +145,33 @@ public class KMeans
 		return cluster;
 	}
 	
+	/*
+	 *  method which calculates the standard deviation of the cluster objects and sets 
+	 *  the value as part of the corresponding cluster 
+	 *  Cluster [] c - array of cluster objects each containing a single cluster
+	 */
+	private void calcStd(Cluster [] c)
+	{
+		for (int i = 0; i < c.length; i++)
+		{
+			float deviation = 0;
+			int members[] = c[i].getMembers();
+			float mu[] = c[i].getMu();
+			
+			for (int j = 0; j < members.length; j++)
+			{
+				float mSum = 0;
+				for (int k = 0; k < mu.length; k++)
+				{
+					mSum = (float) (mSum + Math.pow((data[j][k] - mu[k]), 2));
+				}
+				deviation = (float) (deviation + Math.sqrt(mSum));
+			}
+			deviation = (float) Math.sqrt(deviation / members.length);
+			c[i].setStd(deviation);
+		}
+	}
+	
 	private boolean equals(float [][] pCluster, Cluster[] cCluster)
 	{
 		int count = 0;
@@ -154,5 +192,10 @@ public class KMeans
 		{
 			return false;
 		}
+	}
+	
+	public int getIterations()
+	{
+		return iterations;
 	}
 }

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -39,17 +40,10 @@ public class Driver
 		}
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		
-		// create file writer for training result file  
+		PrintWriter fileWriter = null;
+		// create file writer for result file  
 		try {
-			PrintWriter fileWriter = new PrintWriter(new FileOutputStream(result + ".train.txt"), true);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
-		// create file writer for testing result file
-		try {
-			PrintWriter fileWriterO = new PrintWriter(new FileOutputStream(result + ".test.txt"), true);
+			fileWriter = new PrintWriter(new FileOutputStream(result + ".txt"), true);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,14 +83,39 @@ public class Driver
 			}
 		}
 		KMeans kmeans = new KMeans(examples, clusters);
-		kmeans.cluster();
+		Cluster [] clustered = kmeans.cluster();
 		
-		
-		
-		/* TESTING PHASE
+		/* EVALUATION PHASE
 		 * 
 		 */
+		ClusterEvaluation clusterEval = new ClusterEvaluation(); 
+		fileWriter.println("Results");
+		fileWriter.println("Iterations");
+		fileWriter.println(kmeans.getIterations());
+		fileWriter.print("Cluster, NumMembers, ");
+		for (int i = 0; i < clustered.length-1; i++)
+			fileWriter.print("S" + i + ", ");
+		fileWriter.print("Cohesion");
+		fileWriter.println();
+		for (int i = 0; i < clustered.length; i++)
+		{
+			fileWriter.print(i + " ");
+			fileWriter.print(clustered[i].getNumMembers() + " ");
+			for (int j = 0; j < clustered.length; j++)
+			{
+				if (i != j)
+				{
+					fileWriter.print(clusterEval.clusterSeparation(clustered[i].getMu(), clustered[j].getMu(), 
+							clustered[i].getStd(), clustered[j].getStd()) + " ");
+				}
+			}
+			fileWriter.print(clusterEval.cohesion(clustered[i].getNumMembers(), clustered[i].getStd()));
+			fileWriter.println();
+		}
 		
+		/* CLOSE file reader and writers
+		 * 
+		 */
 		try {
 			bufferedReader.close();
 		} catch (IOException e) {

@@ -3,8 +3,9 @@ import java.util.List;
 
 public class Cluster 
 {
-	float [] mu;
-	List<Integer> member = new ArrayList<>();
+	private float [] mu;
+	private List<Integer> member = new ArrayList<>();
+	private float std;	// float to store the cluster's standard deviation
 	
 	public Cluster(float [] m)
 	{
@@ -23,6 +24,23 @@ public class Cluster
 		{
 			member.remove(member.indexOf(i));
 		}
+	}
+	
+	public int [] getMembers()
+	{
+		int m [] = new int[member.size()];
+		
+		for (int i = 0; i < member.size(); i++)
+		{
+			m[i] = member.get(i);
+		}
+		
+		return m;
+	}
+	
+	public int getNumMembers()
+	{
+		return member.size();
 	}
 	
 	public void calcMu(float [][] d)
@@ -48,6 +66,16 @@ public class Cluster
 	public float [] getMu()
 	{
 		return mu;
+	}
+	
+	public void setStd(float s)
+	{
+		std = s;
+	}
+	
+	public float getStd()
+	{
+		return std;
 	}
 	
 	public void printMu()
