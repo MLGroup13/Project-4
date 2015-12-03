@@ -26,6 +26,11 @@ public class Cluster
 		}
 	}
 	
+	public void clearMembers()
+	{
+		member.clear();
+	}
+	
 	public int [] getMembers()
 	{
 		int m [] = new int[member.size()];
@@ -66,6 +71,11 @@ public class Cluster
 	public float [] getMu()
 	{
 		return mu;
+	}
+	
+	public int getMuLength()
+	{
+		return mu.length;
 	}
 	
 	public void setStd(float s)

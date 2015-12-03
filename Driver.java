@@ -66,6 +66,10 @@ public class Driver
 		int clusters;
 		System.out.println("How many clusters?");
 		clusters = input.nextInt();
+		
+		int particles;
+		System.out.println("How many particles?");
+		particles = input.nextInt();
 				
 		float [][] examples = new float[example][features];
 		for(int i = 0; i < example; i++)
@@ -82,16 +86,21 @@ public class Driver
 				examples[i][j] = Float.parseFloat(data[j]);
 			}
 		}
-		KMeans kmeans = new KMeans(examples, clusters);
-		Cluster [] clustered = kmeans.cluster();
+		//KMeans kmeans = new KMeans(examples, clusters);
+		//Cluster [] clustered = kmeans.cluster();
+		
+		PSO pso = new PSO(examples, clusters, particles);
+		Cluster [] clustered = pso.cluster();
 		
 		/* EVALUATION PHASE
 		 * 
 		 */
 		ClusterEvaluation clusterEval = new ClusterEvaluation(); 
 		fileWriter.println("Results");
+		fileWriter.println("Particles");
+		fileWriter.println(particles);
 		fileWriter.println("Iterations");
-		fileWriter.println(kmeans.getIterations());
+		fileWriter.println(pso.getIterations());
 		fileWriter.print("Cluster, NumMembers, ");
 		for (int i = 0; i < clustered.length-1; i++)
 			fileWriter.print("S" + i + ", ");
