@@ -35,8 +35,9 @@ public class ClusterEvaluation
      * Calculate the cohesion of a cluster given:
      *  int numMembers - the number of members in the cluster
      *  float r - the standard deviation of the cluster
+     *  cohesion here is represented as a density: area/numMembers
      */
     public float cohesion(int numMembers, float r) {
-        return (float) Math.PI * r * r / numMembers;
+        return (float) numMembers/(Math.PI * r * r );
     }
 }
